@@ -1,0 +1,48 @@
+<html style='background-color: black'>
+ <div id="my_bouncing_box"
+     style="background-color: blue; border-radius: 3px; position: absolute; left: 0px; top: 0px; min-width: 100px; min-height: 100px; text-align: center; font-weight: bold; color: #999;">
+     Not loaded</div>
+ <script type="text/javascript">
+     (() => {
+         const BOX = document.getElementById("my_bouncing_box");
+         BOX.textContent = "chao_m";
+         const BOX_WIDTH = 100; // in pixels
+         const BOX_HEIGHT = 100;
+         const TIME_UNIT = 15; // time needed for the box to move 1 pixel vertically and horizontally
+         const state = { left: 0, top: 0, v_x: -1, v_y: -1 }; // the current position of the top left corner of the box,
+         // as well as the velocity in pixels per unit time
+         function advanceState() {
+ 
+             // determine if velocity vectors needs to be switched:
+             const touchesLeftWall = (state.left <= 0);
+             const touchesRightWall = (state.left >= window.innerWidth - BOX_WIDTH);
+             const touchesTopWall = (state.top <= 0);
+             const touchesBottomWall = (state.top >= window.innerHeight - BOX_HEIGHT);
+             if (touchesLeftWall || touchesRightWall) {
+                 state.v_x = -state.v_x;
+             }
+             // leave this as a separate if rather than combining with above as if/else, 
+             // because in the rare case that the box fits the corner exactly,
+             // we should reverse both v_x and v_y
+             if (touchesTopWall || touchesBottomWall) {
+                 state.v_y = -state.v_y;
+             }
+ 
+             // change the position with the now-correct velocity:
+             state.left += state.v_x;
+             state.top += state.v_y;
+         }
+ 
+         function renderState() {
+             BOX.style.left = (state.left).toString() + "px";
+             BOX.style.top = (state.top).toString() + "px";
+         }
+ 
+         setInterval(() => {
+             advanceState();
+             renderState();
+         }, TIME_UNIT);
+     })();
+ </script>
+ 
+ </html>
